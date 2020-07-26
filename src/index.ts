@@ -46,7 +46,7 @@ bot.context.db = {
 }
 bot.use(session.middleware())
 
-bot.use(match)
+bot.command('match', match)
 
 bot.command('start', ({ reply }) => {
     reply(`Hier kommt die Beschreibung für die verschiedenen Kommandos rein:
