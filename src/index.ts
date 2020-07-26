@@ -15,7 +15,8 @@ interface SessionData {
         id: number
         name: string
     }
-    state?: 'chatting' | 'answering' | 'example'
+    playerRole?: 'answeringPlayer' | 'communicatingPlayer'
+    stage: 0
 }
 
 interface DbData {

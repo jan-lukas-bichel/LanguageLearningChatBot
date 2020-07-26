@@ -1,8 +1,11 @@
-const level = {
-    stage1: {
-        player1Text:
+import { BotContext } from './index'
+
+const stages = [
+    {
+        answeringPlayerText:
             'Du bist ein Kassierer ... was ist das Problem des Kunden?',
-        player2Text: 'Du bist ein Kunde ... und das ist dein Problem.',
+        communicatingPlayerText:
+            'Du bist ein Kunde ... und das ist dein Problem.',
         quiz: {
             option1: '',
             option2: '',
@@ -11,15 +14,39 @@ const level = {
         },
         correctAnswer: 3,
     },
+]
+
+export function sendIntroduction(ctx: BotContext): void {
+    const currentStage = ctx.session.stage
+    if (ctx.session.playerRole === 'answeringPlayer') {
+        ctx.reply(stages[currentStage].answeringPlayerText)
+    } else if (ctx.session.playerRole === 'communicatingPlayer') {
+        ctx.reply(stages[currentStage].communicatingPlayerText)
+    }
 }
 
-export function forwardMessageToPartner(ctx: BotContext) {
-    if (ctx.session.state === 'chatting') {
-        const partnerId = ctx.session.matchedPartner?.id
+export function initializeGame(ctx: BotContext): void {
+    sendIntroduction(ctx)
+}
 
-        if (partnerId !== undefined && ctx.message?.text !== undefined) {
-            ctx.telegram.sendMessage(partnerId, ctx.message.text)
-        }
+export function forwardMessageToPartner(ctx: BotContext): void {
+    const partnerId = ctx.session.matchedPartner?.id
+
+    if (partnerId !== undefined && ctx.message?.text !== undefined) {
+        ctx.telegram.sendMessage(partnerId, ctx.message.text)
+    }
+}
+
+export function sendQuiz(ctx: BotContext): void {
+    if ()
+
+        const currentStage = ctx.session.stage
+
+
+    if (ctx.session.playerRole === 'answeringPlayer') {
+        ctx.reply(stages[currentStage].answeringPlayerText)
+    } else if (ctx.session.playerRole === 'communicatingPlayer') {
+        ctx.reply(stages[currentStage].communicatingPlayerText)
     }
 }
 
