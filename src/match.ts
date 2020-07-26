@@ -1,4 +1,4 @@
-import { BotContext } from '.'
+import { BotContext, SessionData } from '.'
 import { initializeGame } from './game'
 
 async function assignPartnerToSelf(
@@ -7,7 +7,7 @@ async function assignPartnerToSelf(
 ): Promise<void> {
     // set id and name of partner
     const partnerName =
-        (await ctx.telegram.getChat(partnerId)).username ?? 'Anonym'
+        (await ctx.telegram.getChat(partnerId)).first_name ?? 'Anonym'
     ctx.session.matchedPartner = {
         id: parseInt(partnerId, 10),
         name: partnerName,
@@ -16,19 +16,16 @@ async function assignPartnerToSelf(
     ctx.session.state = 'in-game'
 }
 
-function assignSelfToPartner(ctx: BotContext, partnerId: string): void {
-    const partnerSession = ctx.db.getSession(partnerId)
+function assignSelfToPartner(ctx: BotContext, partner: SessionData): void {
     // set id and name of self
     const selfId = ctx.chat?.id ?? 0
-    const selfName = ctx.chat?.username ?? 'Anonym'
-    partnerSession.matchedPartner = {
+    const selfName = ctx.chat?.first_name ?? 'Anonym'
+    partner.matchedPartner = {
         id: selfId,
         name: selfName,
     }
     // set status to in-game
-    partnerSession.state = 'in-game'
-
-    ctx.db.saveSession(partnerId, partnerSession)
+    partner.state = 'in-game'
 }
 
 // called upon /match command
@@ -45,9 +42,10 @@ export async function match(ctx: BotContext): Promise<void> {
 
         // set id and name of partner
         const partnerId = partners[0].id
-        assignPartnerToSelf(ctx, partnerId)
-        assignSelfToPartner(ctx, partnerId)
-
-        initializeGame(ctx)
+        const partnerSession = ctx.db.getSession(partnerId)
+        await assignPartnerToSelf(ctx, partnerId)
+        assignSelfToPartner(ctx, partnerSession)
+        initializeGame(ctx, partnerSession)
+        ctx.db.saveSession(partnerId, partnerSession)
     }
 }

@@ -40,19 +40,19 @@ const session = new LocalSession<SessionData>({
     getSessionKey: ctx => ctx.from?.id?.toString() ?? '',
 })
 bot.context.db = {
-    getSession: session.getSession,
-    saveSession: session.saveSession,
+    getSession: key => session.getSession(key),
+    saveSession: (key, data) => session.saveSession(key, data),
     db: session.DB as LowdbSync<DbData>,
 }
 bot.use(session.middleware())
 
-bot.use(match)
+bot.command('match', match)
 
 bot.command('start', ({ reply }) => {
     reply(`Hier kommt die Beschreibung für die verschiedenen Kommandos rein:
-/Match
-/Optionen
-/Sonstwas`)
+/match
+/optionen
+/sonstwas`)
 })
 
 bot.on(['text'], game.forwardMessageToPartner)
@@ -60,3 +60,18 @@ bot.on('callback_query', game.sendQuiz)
 bot.on('poll_answer', game.checkAnswer)
 
 bot.startPolling()
+
+/*
+
+{
+  "sessions": [
+    {
+      "id": "493499859",
+      "data": {
+        "state": "looking for match"
+      }
+    }
+  ]
+}
+
+*/
