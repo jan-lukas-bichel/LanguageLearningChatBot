@@ -1,0 +1,35 @@
+{
+    "name": "lang-learn-bot",
+    "version": "0.1.0",
+    "private": true,
+    "license": "MIT",
+    "author": "@KnorpelSenf",
+    "engines": {
+        "node": ">=12.0.0"
+    },
+    "scripts": {
+        "start": "node built/app.js",
+        "debug": "node -r ts-node/register src/app.ts",
+        "build": "tsc",
+        "export:deps": "rm -rf built/node_modules && mkdir -p built/node_modules && npm ls --only prod --parseable | tail -n +2 | xargs -I % cp -r % built/node_modules",
+        "lint": "eslint -c .eslintrc.js --ext .ts src",
+        "clean": "rm -rf built"
+    },
+    "dependencies": {
+        "dotenv": "^8.2.0",
+        "telegraf": "^3.38.0"
+    },
+    "devDependencies": {
+        "@types/node": "^14.0.26",
+        "@typescript-eslint/eslint-plugin": "^2.34.0",
+        "@typescript-eslint/eslint-plugin-tslint": "^2.34.0",
+        "@typescript-eslint/parser": "^2.34.0",
+        "eslint": "^6.8.0",
+        "eslint-config-prettier": "^6.11.0",
+        "eslint-config-typescript": "^3.0.0",
+        "eslint-plugin-prettier": "^3.1.4",
+        "prettier": "^2.0.5",
+        "ts-node": "^8.10.2",
+        "typescript": "^3.9.5"
+    }
+}

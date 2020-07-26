@@ -1,0 +1,9 @@
+{
+    "editor.formatOnSave": true,
+    "debug.node.autoAttach": "on",
+    "debug.openDebug": "openOnDebugBreak",
+    "editor.codeActionsOnSave": {
+        "source.fixAll": true
+    },
+    "typescript.tsdk": "bot/node_modules/typescript/lib"
+}
