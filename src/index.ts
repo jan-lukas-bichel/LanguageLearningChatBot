@@ -1,4 +1,5 @@
 import { config } from 'dotenv'
+import { lowdb } from 'lowdb'
 config()
 
 import Telegraf, { Context } from 'telegraf'
@@ -9,19 +10,27 @@ if (token === undefined) {
     throw new Error('No token provided!')
 }
 
-interface SessionData {
+export interface SessionData {
     counter: number | undefined
 }
 
-interface BotContext extends Context {
+export interface BotContext extends Context {
     session: SessionData
-    db: LocalSession<SessionData>
+    db: {
+        getSession: LocalSession<SessionData>['getSession']
+        saveSession: LocalSession<SessionData>['saveSession']
+        db: lowdb
+    }
 }
 
 const bot = new Telegraf<BotContext>(token)
 
 const session = new LocalSession<SessionData>()
-bot.context.db = session
+bot.context.db = {
+    getSession: session.getSession,
+    saveSession: session.saveSession,
+    db: session.DB as lowdb,
+}
 bot.use(session.middleware())
 
 bot.on('photo', (ctx, next) => {
