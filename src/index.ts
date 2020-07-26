@@ -11,7 +11,7 @@ if (token === undefined) {
     throw new Error('No token provided!')
 }
 
-interface SessionData {
+export interface SessionData {
     matchedPartner?: {
         id: number
         name: string
