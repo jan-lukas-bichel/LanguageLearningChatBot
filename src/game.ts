@@ -45,7 +45,7 @@ export function initializeGame(
     sendIntroductions(ctx)
 }
 
-export function forwardMessageToPartner(ctx: BotContext): void {
+export async function forwardMessageToPartner(ctx: BotContext): Promise<void> {
     const partnerId = ctx.session.matchedPartner?.id
 
     if (
@@ -57,9 +57,12 @@ export function forwardMessageToPartner(ctx: BotContext): void {
         return
     }
     if (ctx.session.playerRole === 'communicatingPlayer') {
-        ctx.telegram.sendMessage(partnerId, ctx.message.text, {
-            // eslint-disable-next-line @typescript-eslint/camelcase
-            reply_markup: { inline_keyboard: [[{ text: 'Antwort' }]] },
+        await ctx.telegram.sendMessage(partnerId, ctx.message.text, {
+            reply_markup: {
+                inline_keyboard: [
+                    [{ text: 'Antwort', callback_data: 'empty' }],
+                ],
+            },
         })
     }
 }
@@ -70,8 +73,8 @@ export function sendQuiz(ctx: BotContext): void {
         ctx.session.stage !== undefined
     ) {
         const quiz = stages[ctx.session.stage].quiz
+        ctx.answerCbQuery()
         ctx.replyWithQuiz(quiz.question, quiz.answers, {
-            // eslint-disable-next-line @typescript-eslint/camelcase
             correct_option_id: quiz.correctAnswer,
         })
     }
