@@ -23,6 +23,7 @@ module.exports = {
             },
         ],
         'object-shorthand': ['error', 'always', { avoidQuotes: true }],
+        "@typescript-eslint/camelcase": ['off']
     },
     parserOptions: {
         parser: '@typescript-eslint/parser',
