@@ -7,7 +7,7 @@ async function assignPartnerToSelf(
 ): Promise<void> {
     // set id and name of partner
     const partnerName =
-        (await ctx.telegram.getChat(partnerId)).username ?? 'Anonym'
+        (await ctx.telegram.getChat(partnerId)).first_name ?? 'Anonym'
     ctx.session.matchedPartner = {
         id: parseInt(partnerId, 10),
         name: partnerName,
@@ -19,7 +19,7 @@ async function assignPartnerToSelf(
 function assignSelfToPartner(ctx: BotContext, partner: SessionData): void {
     // set id and name of self
     const selfId = ctx.chat?.id ?? 0
-    const selfName = ctx.chat?.username ?? 'Anonym'
+    const selfName = ctx.chat?.first_name ?? 'Anonym'
     partner.matchedPartner = {
         id: selfId,
         name: selfName,
