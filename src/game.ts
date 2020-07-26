@@ -1,5 +1,4 @@
-import { BotContext } from './index'
-import { SessionData } from './index'
+import { BotContext, SessionData } from '.'
 
 const stages = [
     {
