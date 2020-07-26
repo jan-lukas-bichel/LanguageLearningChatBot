@@ -3,6 +3,7 @@ import { LowdbSync } from 'lowdb'
 import Telegraf, { Context } from 'telegraf'
 import LocalSession from 'telegraf-session-local'
 import { forwardMessageToPartner } from './game'
+import { match } from './match'
 config()
 
 const token = process.env.BOT_TOKEN
@@ -15,8 +16,9 @@ interface SessionData {
         id: number
         name: string
     }
+    state?: 'idle' | 'in-game' | 'looking for match'
     playerRole?: 'answeringPlayer' | 'communicatingPlayer'
-    stage: 0
+    stage?: number
 }
 
 interface DbData {
@@ -34,13 +36,17 @@ export interface BotContext extends Context {
 
 const bot = new Telegraf<BotContext>(token)
 
-const session = new LocalSession<SessionData>()
+const session = new LocalSession<SessionData>({
+    getSessionKey: ctx => ctx.from?.id?.toString() ?? '',
+})
 bot.context.db = {
     getSession: session.getSession,
     saveSession: session.saveSession,
     db: session.DB as LowdbSync<DbData>,
 }
 bot.use(session.middleware())
+
+bot.use(match)
 
 bot.command('start', ({ reply }) => {
     reply(`Hier kommt die Beschreibung für die verschiedenen Kommandos rein:
@@ -51,13 +57,4 @@ bot.command('start', ({ reply }) => {
 
 bot.on(['text'], forwardMessageToPartner)
 
-/*bot.on('photo', (ctx, next) => {
-    const session = ctx.session
-    session.counter = session.counter ?? 0
-    session.counter++
-    return next()
-})
-bot.hears('/stats', ({ reply, session, from }) =>
-    reply(`already got ${session.counter ?? 0} pics from ${from?.username}!`)
-)*/
 bot.startPolling()
