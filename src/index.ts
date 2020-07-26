@@ -20,11 +20,14 @@ interface SessionData {
 
 interface BotContext extends Context {
     session: SessionData
+    db: LocalSession<SessionData>
 }
 
 const bot = new Telegraf<BotContext>(token)
 
-bot.use(new LocalSession().middleware())
+const session = new LocalSession<SessionData>()
+bot.context.db = session
+bot.use(session.middleware())
 
 bot.command('start', ({ reply }) => {
     reply(`Hier kommt die Beschreibung für die verschiedenen Kommandos rein:
