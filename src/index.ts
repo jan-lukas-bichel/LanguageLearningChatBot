@@ -50,9 +50,9 @@ bot.command('match', match)
 
 bot.command('start', ({ reply }) => {
     reply(`Hier kommt die Beschreibung für die verschiedenen Kommandos rein:
-/Match
-/Optionen
-/Sonstwas`)
+/match
+/optionen
+/sonstwas`)
 })
 
 bot.on(['text'], forwardMessageToPartner)
