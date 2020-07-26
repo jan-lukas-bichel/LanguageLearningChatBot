@@ -43,7 +43,7 @@ export async function match(ctx: BotContext): Promise<void> {
         // set id and name of partner
         const partnerId = partners[0].id
         const partnerSession = ctx.db.getSession(partnerId)
-        assignPartnerToSelf(ctx, partnerId)
+        await assignPartnerToSelf(ctx, partnerId)
         assignSelfToPartner(ctx, partnerSession)
         initializeGame(ctx, partnerSession)
         ctx.db.saveSession(partnerId, partnerSession)

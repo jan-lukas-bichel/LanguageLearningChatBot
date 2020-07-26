@@ -40,8 +40,8 @@ const session = new LocalSession<SessionData>({
     getSessionKey: ctx => ctx.from?.id?.toString() ?? '',
 })
 bot.context.db = {
-    getSession: session.getSession,
-    saveSession: session.saveSession,
+    getSession: key => session.getSession(key),
+    saveSession: (key, data) => session.saveSession(key, data),
     db: session.DB as LowdbSync<DbData>,
 }
 bot.use(session.middleware())
@@ -58,3 +58,18 @@ bot.command('start', ({ reply }) => {
 bot.on(['text'], forwardMessageToPartner)
 
 bot.startPolling()
+
+/*
+
+{
+  "sessions": [
+    {
+      "id": "493499859",
+      "data": {
+        "state": "looking for match"
+      }
+    }
+  ]
+}
+
+*/
