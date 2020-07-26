@@ -15,11 +15,14 @@ interface SessionData {
 
 interface BotContext extends Context {
     session: SessionData
+    db: LocalSession<SessionData>
 }
 
 const bot = new Telegraf<BotContext>(token)
 
-bot.use(new LocalSession().middleware())
+const session = new LocalSession<SessionData>()
+bot.context.db = session
+bot.use(session.middleware())
 
 bot.on('photo', (ctx, next) => {
     const session = ctx.session
