@@ -2,7 +2,7 @@ import { config } from 'dotenv'
 import { LowdbSync } from 'lowdb'
 import Telegraf, { Context } from 'telegraf'
 import LocalSession from 'telegraf-session-local'
-import { forwardMessageToPartner } from './game'
+import * as game from './game'
 import { match } from './match'
 config()
 
@@ -55,6 +55,8 @@ bot.command('start', ({ reply }) => {
 /Sonstwas`)
 })
 
-bot.on(['text'], forwardMessageToPartner)
+bot.on(['text'], game.forwardMessageToPartner)
+bot.on('callback_query', game.sendQuiz)
+bot.on('poll_answer', game.checkAnswer)
 
 bot.startPolling()
