@@ -1,10 +1,9 @@
 import { config } from 'dotenv'
-import { lowdb } from 'lowdb'
-config()
-
+import { LowdbSync } from 'lowdb'
 import Telegraf, { Context } from 'telegraf'
 import LocalSession from 'telegraf-session-local'
 import { forwardMessageToPartner } from './game'
+config()
 
 const token = process.env.BOT_TOKEN
 if (token === undefined) {
@@ -19,12 +18,16 @@ interface SessionData {
     state?: 'chatting' | 'answering' | 'example'
 }
 
+interface DbData {
+    sessions: { id: string; data: SessionData }[]
+}
+
 export interface BotContext extends Context {
     session: SessionData
     db: {
         getSession: LocalSession<SessionData>['getSession']
         saveSession: LocalSession<SessionData>['saveSession']
-        db: lowdb
+        db: LowdbSync<DbData>
     }
 }
 
@@ -34,7 +37,7 @@ const session = new LocalSession<SessionData>()
 bot.context.db = {
     getSession: session.getSession,
     saveSession: session.saveSession,
-    db: session.DB as lowdb,
+    db: session.DB as LowdbSync<DbData>,
 }
 bot.use(session.middleware())
 
