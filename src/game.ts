@@ -1,4 +1,6 @@
 import { BotContext, SessionData } from '.'
+import d from 'debug'
+const debug = d('bot:game')
 
 const stages = [
     {
@@ -76,16 +78,19 @@ export function sendQuiz(ctx: BotContext): void {
         ctx.answerCbQuery()
         ctx.replyWithQuiz(quiz.question, quiz.answers, {
             correct_option_id: quiz.correctAnswer,
+            is_anonymous: false,
         })
     }
 }
 
 export function checkAnswer(ctx: BotContext): void {
+    debug('yay, calling checkAnswer!!!!!!!1111eins')
     if (
         ctx.pollAnswer === undefined ||
-        ctx.session.stage === undefined ||
-        ctx.session.matchedPartner?.id === undefined
+        ctx.session?.stage === undefined ||
+        ctx.session?.matchedPartner?.id === undefined
     ) {
+        debug(ctx.pollAnswer, ctx.session)
         return
     } else {
         const partnerId = ctx.session.matchedPartner?.id
@@ -96,12 +101,15 @@ export function checkAnswer(ctx: BotContext): void {
             const successMessagePartner = 'Richtige Antwort'
             const successMessageSelf = 'Richtige Antwort'
             ctx.telegram.sendMessage(partnerId, successMessagePartner)
-            ctx.reply(successMessageSelf)
+            ctx.telegram.sendMessage(ctx.pollAnswer.user.id, successMessageSelf)
         } else {
             const wrongAnswerMessagePartner = 'Falsche Antwort'
             const wrongAnswerMessageSelf = 'Falsche Antwort'
             ctx.telegram.sendMessage(partnerId, wrongAnswerMessagePartner)
-            ctx.reply(wrongAnswerMessageSelf)
+            ctx.telegram.sendMessage(
+                ctx.pollAnswer.user.id,
+                wrongAnswerMessageSelf
+            )
         }
     }
 }

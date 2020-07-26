@@ -3,6 +3,8 @@ import { LowdbSync } from 'lowdb'
 import Telegraf, { Context } from 'telegraf'
 import LocalSession from 'telegraf-session-local'
 import * as game from './game'
+import d from 'debug'
+const debug = d('bot:index')
 import { match } from './match'
 config()
 
@@ -37,7 +39,8 @@ export interface BotContext extends Context {
 const bot = new Telegraf<BotContext>(token)
 
 const session = new LocalSession<SessionData>({
-    getSessionKey: ctx => ctx.from?.id?.toString() ?? '',
+    getSessionKey: ctx =>
+        ctx.from?.id?.toString() ?? ctx.pollAnswer?.user?.id?.toString() ?? '',
 })
 bot.context.db = {
     getSession: key => session.getSession(key),
@@ -45,6 +48,11 @@ bot.context.db = {
     db: session.DB as LowdbSync<DbData>,
 }
 bot.use(session.middleware())
+
+bot.use((ctx, next) => {
+    debug(ctx)
+    return next()
+})
 
 bot.command('match', match)
 
