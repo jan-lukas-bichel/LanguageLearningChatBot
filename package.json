@@ -8,8 +8,8 @@
         "node": ">=12.0.0"
     },
     "scripts": {
-        "start": "node built/app.js",
-        "debug": "node -r ts-node/register src/app.ts",
+        "start": "node built/",
+        "debug": "node -r ts-node/register src/",
         "build": "tsc",
         "export:deps": "rm -rf built/node_modules && mkdir -p built/node_modules && npm ls --only prod --parseable | tail -n +2 | xargs -I % cp -r % built/node_modules",
         "lint": "eslint -c .eslintrc.js --ext .ts src",
