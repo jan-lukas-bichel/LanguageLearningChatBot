@@ -38,6 +38,8 @@ export function initializeGame(
     ctx: BotContext,
     otherPlayer: SessionData
 ): void {
+    ctx.session.stage = 0
+    otherPlayer.stage = 0
     ctx.session.playerRole = 'answeringPlayer'
     otherPlayer.playerRole = 'communicatingPlayer'
     sendIntroductions(ctx)
